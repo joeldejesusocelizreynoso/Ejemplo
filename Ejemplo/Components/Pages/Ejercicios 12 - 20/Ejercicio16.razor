@@ -1,0 +1,68 @@
+﻿@page "/Ejercicio16"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 16: Verificar código ASCII de una letra minúscula</h3>
+
+<div>
+    <label>Introduce un número entero (código ASCII):</label>
+    <input @bind="numeroInput" @bind:event="oninput" type="text" />
+
+    <button class="btn btn-outline-primary" @onclick="VerificarCodigoASCII">Verificar</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else
+    {
+        <p>El número corresponde a una letra minúscula: @(resultado == 1 ? 1 : 0)</p>
+    }
+    <p>Nota: Los códigos ASCII de las letras minúsculas están entre 97 (a) y 122 (z).</p>
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numeroInput = "";  // Se recibe el valor como string para validar
+    private int resultado = 0;
+    private string mensajeError = "";
+
+    private void VerificarCodigoASCII()
+    {
+        mensajeError = "";
+
+        // Validar que el input no esté vacío
+        if (string.IsNullOrWhiteSpace(numeroInput))
+        {
+            mensajeError = "No se ha introducido ningún número.";
+            return;
+        }
+
+        // Intentar convertir el input a número entero
+        if (int.TryParse(numeroInput, out int numero))
+        {
+            // Verificar si es un código ASCII válido para letras minúsculas
+            resultado = EsLetraMinuscula(numero);
+        }
+        else
+        {
+            mensajeError = "Por favor, introduce un número entero válido.";
+        }
+    }
+
+    private void Limpiar()
+    {
+        numeroInput = "";
+        resultado = 0;
+        mensajeError = "";
+    }
+
+    private int EsLetraMinuscula(int num)
+    {
+        // Los códigos ASCII de las letras minúsculas están entre 97 (a) y 122 (z)
+        return (num >= 97 && num <= 122) ? 1 : 0;
+    }
+}

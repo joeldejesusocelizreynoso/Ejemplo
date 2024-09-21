@@ -1,0 +1,273 @@
+﻿@* @page "/Ejercicio42"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 42: Cantidad de números primos en una matriz 3x4</h3>
+
+<div>
+    <label>Introduce 12 números separados por espacios (para la matriz 3x4):</label>
+    <input @bind-value="numerosInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 2 3 5 8 11 13 ..." />
+</div>
+
+<div>
+    <button class="btn btn-outline-primary" @onclick="CalcularPrimosEnMatriz">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="LimpiarResultados">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red">@mensajeError</p>
+    }
+    else
+    {
+        <p>Cantidad de números primos en la matriz: @cantidadPrimos</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numerosInput;
+    private int[,] matriz = new int[3, 4]; // Matriz 3x4
+    private int cantidadPrimos;
+    private string mensajeError = "";
+
+    private void CalcularPrimosEnMatriz()
+    {
+        mensajeError = ""; // Limpiar el mensaje de error
+
+        // Comprobar si no se ha introducido ningún número
+        if (string.IsNullOrWhiteSpace(numerosInput))
+        {
+            mensajeError = "No se ha introducido ningún número. Vuelva a intentarlo.";
+            Limpiar();
+            return;
+        }
+
+        int[] vectorNumeros = ObtenerVectorDesdeInput(numerosInput);
+
+        // Validación para comprobar si se han introducido exactamente 12 números
+        if (vectorNumeros.Length != 12)
+        {
+            mensajeError = "No se ha introducido la cantidad de números especificados. Vuelva a intentarlo.";
+            Limpiar();
+            return;
+        }
+
+        LlenarMatriz(vectorNumeros);
+        cantidadPrimos = ContarPrimosEnMatriz(matriz);
+    }
+
+    // Función para convertir la cadena de entrada en un vector de enteros
+    private int[] ObtenerVectorDesdeInput(string input)
+    {
+        string[] numerosString = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        int[] vector = new int[numerosString.Length];
+
+        for (int i = 0; i < numerosString.Length; i++)
+        {
+            if (!int.TryParse(numerosString[i], out vector[i]))
+            {
+                mensajeError = $"El valor '{numerosString[i]}' no es un número entero válido.";
+                Limpiar();
+                return new int[0]; // Retornar un vector vacío para indicar un error
+            }
+        }
+
+        return vector;
+    }
+
+    // Función para llenar la matriz 3x4 con el vector de entrada
+    private void LlenarMatriz(int[] vector)
+    {
+        int contador = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                matriz[i, j] = vector[contador];
+                contador++;
+            }
+        }
+    }
+
+    // Función para contar cuántos números primos hay en la matriz
+    private int ContarPrimosEnMatriz(int[,] matriz)
+    {
+        int contadorPrimos = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (EsPrimo(matriz[i, j]))
+                {
+                    contadorPrimos++;
+                }
+            }
+        }
+        return contadorPrimos;
+    }
+
+    // Función para verificar si un número es primo
+    private bool EsPrimo(int numero)
+    {
+        if (numero < 2) return false;
+        for (int i = 2; i <= Math.Sqrt(numero); i++)
+        {
+            if (numero % i == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void Limpiar()
+    {
+        numerosInput = "";
+        cantidadPrimos = 0;
+        mensajeError = "";
+    }
+
+    private void LimpiarResultados()
+    {
+        numerosInput = "";
+        cantidadPrimos = 0;
+        mensajeError = "";
+    }
+}
+ *@
+
+ @page "/Ejercicio42"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 42: Cantidad de números primos en una matriz 3x4</h3>
+
+<div>
+    <label>Introduce 12 números separados por espacios (para la matriz 3x4):</label>
+    <input @bind-value="numerosInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 2 3 5 8 11 13 ..." />
+</div>
+
+<div>
+    <button class="btn btn-outline-primary" @onclick="CalcularPrimosEnMatriz">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="LimpiarResultados">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red">@mensajeError</p>
+    }
+    else
+    {
+        <p>Cantidad de números primos en la matriz: @cantidadPrimos</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numerosInput;
+    private int[,] matriz = new int[3, 4]; // Matriz 3x4
+    private int cantidadPrimos;
+    private string mensajeError = "";
+
+    private void CalcularPrimosEnMatriz()
+    {
+        mensajeError = ""; // Limpiar el mensaje de error
+
+        // Comprobar si no se ha introducido ningún número
+        if (string.IsNullOrWhiteSpace(numerosInput))
+        {
+            mensajeError = "No se ha introducido ningún número. Vuelva a intentarlo.";
+            return;
+        }
+
+        int[] vectorNumeros = ObtenerVectorDesdeInput(numerosInput);
+
+        // Validación para comprobar si se han introducido exactamente 12 números
+        if (vectorNumeros.Length != 12)
+        {
+            mensajeError = "No se ha introducido la cantidad de números especificados. Vuelva a intentarlo.";
+            return;
+        }
+
+        LlenarMatriz(vectorNumeros);
+        cantidadPrimos = ContarPrimosEnMatriz(matriz);
+    }
+
+    // Función para convertir la cadena de entrada en un vector de enteros
+    private int[] ObtenerVectorDesdeInput(string input)
+    {
+        string[] numerosString = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        int[] vector = new int[numerosString.Length];
+
+        for (int i = 0; i < numerosString.Length; i++)
+        {
+            if (!int.TryParse(numerosString[i], out vector[i]))
+            {
+                mensajeError = $"El valor '{numerosString[i]}' no es un número entero válido.";
+                return new int[0]; // Retornar un vector vacío para indicar un error
+            }
+        }
+
+        return vector;
+    }
+
+    // Función para llenar la matriz 3x4 con el vector de entrada
+    private void LlenarMatriz(int[] vector)
+    {
+        int contador = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                matriz[i, j] = vector[contador];
+                contador++;
+            }
+        }
+    }
+
+    // Función para contar cuántos números primos hay en la matriz
+    private int ContarPrimosEnMatriz(int[,] matriz)
+    {
+        int contadorPrimos = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (EsPrimo(matriz[i, j]))
+                {
+                    contadorPrimos++;
+                }
+            }
+        }
+        return contadorPrimos;
+    }
+
+    // Función para verificar si un número es primo
+    private bool EsPrimo(int numero)
+    {
+        if (numero < 2) return false;
+        for (int i = 2; i <= Math.Sqrt(numero); i++)
+        {
+            if (numero % i == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void Limpiar()
+    {
+        numerosInput = "";
+        cantidadPrimos = 0;
+        mensajeError = "";
+    }
+
+    private void LimpiarResultados()
+    {
+        Limpiar();
+    }
+}

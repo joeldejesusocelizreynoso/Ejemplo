@@ -1,0 +1,151 @@
+﻿@page "/Ejercicio48"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 48: Posiciones del mayor número primo en una matriz 4x4</h3>
+
+<div>
+    <label>Introduce 16 números separados por espacios (para la matriz 4x4):</label>
+    <input @bind-value="numerosInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 1 2 3 5 7 11 ..." />
+</div>
+
+<div>
+    <button class="btn btn-outline-primary" @onclick="CalcularMayorPrimoPosicion">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="LimpiarResultados">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red">@mensajeError</p>
+    }
+    else if (mayorPrimo == -1)
+    {
+        <p>No se encontró ningún número primo en la matriz.</p>
+    }
+    else
+    {
+        <p>El mayor número primo es: @mayorPrimo</p>
+        <p>Se encuentra en las siguientes posiciones:</p>
+        <ul>
+            @foreach (var posicion in posicionesMayorPrimo)
+            {
+                <li>Fila: @posicion.fila, Columna: @posicion.columna</li>
+            }
+        </ul>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numerosInput;
+    private int[,] matriz = new int[4, 4]; // Matriz 4x4
+    private int mayorPrimo = -1;
+    private List<(int fila, int columna)> posicionesMayorPrimo = new List<(int fila, int columna)>();
+    private string mensajeError = "";
+
+    private void CalcularMayorPrimoPosicion()
+    {
+        mensajeError = ""; // Limpiar mensajes previos
+        mayorPrimo = -1;   // Reiniciar valores
+        posicionesMayorPrimo.Clear();
+
+        if (string.IsNullOrWhiteSpace(numerosInput))
+        {
+            mensajeError = "No se ha introducido ningún número. Vuelva a intentarlo.";
+            Limpiar();
+            return;
+        }
+
+        int[] vectorNumeros = ObtenerVectorDesdeInput(numerosInput);
+
+        // Validación para comprobar si el número de entradas es exactamente 16
+        if (vectorNumeros.Length != 16)
+        {
+            mensajeError = "Se deben introducir exactamente 16 números. Vuelva a intentarlo.";
+            Limpiar();
+            return;
+        }
+
+        LlenarMatriz(vectorNumeros);
+        mayorPrimo = ObtenerMayorPrimo(matriz);
+        ObtenerPosicionesMayorPrimo(matriz, mayorPrimo);
+    }
+
+    // Función para convertir la cadena de entrada en un vector de enteros con validación de letras
+    private int[] ObtenerVectorDesdeInput(string input)
+    {
+        string[] numerosString = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        int[] vector = new int[numerosString.Length];
+
+        for (int i = 0; i < numerosString.Length; i++)
+        {
+            if (!int.TryParse(numerosString[i], out vector[i]))
+            {
+                mensajeError = $"El valor '{numerosString[i]}' no es un número entero válido. Por favor, ingrese solo números.";
+                return new int[0]; // Retornar un vector vacío para indicar un error
+            }
+        }
+
+        return vector;
+    }
+
+    // Función para llenar la matriz 4x4 con el vector de entrada
+    private void LlenarMatriz(int[] vector)
+    {
+        int contador = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                matriz[i, j] = vector[contador];
+                contador++;
+            }
+        }
+    }
+
+    // Función para obtener el mayor número primo
+    private int ObtenerMayorPrimo(int[,] matriz)
+    {
+        return matriz.Cast<int>() // Convertir la matriz a un enumerable
+                     .Where(EsPrimo)
+                     .DefaultIfEmpty(-1) // Si no hay primos, devolver -1
+                     .Max();
+    }
+
+    // Función para obtener las posiciones de las apariciones del mayor número primo
+    private void ObtenerPosicionesMayorPrimo(int[,] matriz, int maxPrimo)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (matriz[i, j] == maxPrimo)
+                {
+                    posicionesMayorPrimo.Add((i + 1, j + 1)); // Almacenar la posición (fila, columna) con base 1
+                }
+            }
+        }
+    }
+
+    // Función para verificar si un número es primo
+    private bool EsPrimo(int numero)
+    {
+        if (numero < 2) return false;
+        return Enumerable.Range(2, (int)Math.Sqrt(numero) - 1)
+                         .All(divisor => numero % divisor != 0);
+    }
+
+    private void Limpiar()
+    {
+        numerosInput = "";
+        mayorPrimo = -1;
+        posicionesMayorPrimo.Clear();
+    }
+
+    private void LimpiarResultados()
+    {
+        Limpiar();
+        mensajeError = "";
+    }
+}

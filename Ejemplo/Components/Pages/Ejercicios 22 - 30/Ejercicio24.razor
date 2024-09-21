@@ -1,0 +1,84 @@
+﻿@page "/ejercicio24"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 24: Verificar si dos números son inversos</h3>
+
+<div>
+    <label>Introduce el primer número de dos dígitos (positivo o negativo):</label>
+    <input @bind-value="numero1Input" @bind-value:event="oninput" type="text" />
+
+    <label>Introduce el segundo número de dos dígitos (positivo o negativo):</label>
+    <input @bind-value="numero2Input" @bind-value:event="oninput" type="text" />
+
+    <button class="btn btn-outline-primary" @onclick="VerificarInversos">Verificar</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else
+    {
+        <p>¿Son inversos?: @(resultado == 1 ? 1 : 0)</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numero1Input = "";
+    private string numero2Input = "";
+    private int resultado = 0;
+    private string mensajeError = "";
+
+    private void VerificarInversos()
+    {
+        mensajeError = "";
+
+        // Validar si los inputs están vacíos
+        if (string.IsNullOrWhiteSpace(numero1Input) || string.IsNullOrWhiteSpace(numero2Input))
+        {
+            mensajeError = "Por favor, introduce ambos números.";
+            return;
+        }
+
+        // Verificar si ambos números son enteros válidos
+        if (int.TryParse(numero1Input, out int numero1) && int.TryParse(numero2Input, out int numero2))
+        {
+            // Validar si ambos números tienen dos dígitos (positivos o negativos)
+            if ((Math.Abs(numero1) < 10 || Math.Abs(numero1) > 99) || (Math.Abs(numero2) < 10 || Math.Abs(numero2) > 99))
+            {
+                mensajeError = "Ambos números deben ser enteros de dos dígitos (pueden ser positivos o negativos).";
+            }
+            else
+            {
+                // Si las validaciones son correctas, verificar si son inversos
+                resultado = SonInversos(numero1, numero2);
+            }
+        }
+        else
+        {
+            mensajeError = "Por favor, introduce números enteros válidos.";
+        }
+    }
+
+    private void Limpiar()
+    {
+        numero1Input = "";
+        numero2Input = "";
+        resultado = 0;
+        mensajeError = "";
+    }
+
+    private int SonInversos(int num1, int num2)
+    {
+        // Convertir ambos números a cadenas para invertir el segundo número
+        string numero1Str = Math.Abs(num1).ToString(); // Convertir a positivo para comparar los dígitos
+        string numero2Invertido = new string(Math.Abs(num2).ToString().Reverse().ToArray());
+
+        // Verificar si los números son inversos (ignorando los signos)
+        return numero1Str == numero2Invertido ? 1 : 0;
+    }
+}

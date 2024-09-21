@@ -1,0 +1,180 @@
+﻿@* @page "/Menú-Ejercicios"
+@rendermode InteractiveServer
+
+<PageTitle>Menú de Ejercicios</PageTitle>
+
+@if (mostrarImagen)
+{
+    <p>Vista previa de la imagen</p>
+
+    <div class="embed-responsive embed-responsive-16by9" style="max-width:900px;">
+        <img class="img-fluid" style="width:100%; height:600px" src="@imagenUrl" alt="Vista previa de la imagen" />
+    </div>
+
+    <button class="btn btn-primary" @onclick="()=>mostrarImagen = false">Cerrar Imagen</button>
+}
+else
+{
+    <h1 class="titulo-menu">Menú de Ejercicios</h1>
+
+    <p class="texto-menu">A continuación puedes seleccionar un ejercicio para ir a su respectiva página o visualizar su imagen.</p>
+
+
+    <div class="container-cartas">
+        <div class="row">
+            @foreach (var ejercicio in ejercicios)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <img @onclick="()=>verImagen(ejercicio)" class="card-img-top" src="Images/@(ejercicio.Imagen)" />
+                        <div class="card-body">
+                            <h5 class="card-title">@ejercicio.Titulo</h5>
+                            <p class="card-text">@ejercicio.Descripcion</p>
+                            <a href="@ejercicio.Url" class="btn btn-outline-primary">Ir al Ejercicio</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+
+@code {
+    bool mostrarImagen = false;
+    string imagenUrl = "";
+
+    class Ejercicio
+    {
+        public string Titulo { get; set; } = "";
+        public string Descripcion { get; set; } = "";
+        public string Url { get; set; } = "";
+        public string Imagen { get; set; } = ""; // Nombre de la imagen en la carpeta 'images'
+    }
+
+    void verImagen(Ejercicio ejercicio)
+    {
+        mostrarImagen = true;
+        imagenUrl = "Images/" + ejercicio.Imagen;
+        StateHasChanged();
+    }
+
+    List<Ejercicio> ejercicios = new List<Ejercicio>
+    {
+        new Ejercicio {Titulo = "Ejercicio 2", Descripcion = "Obtener dos últimos dígitos.", Url = "/Ejercicio02", Imagen = "Ejercicio02.png"},
+        new Ejercicio {Titulo = "Ejercicio 4", Descripcion = "Cantidad de dígitos pares.", Url = "/Ejercicio04", Imagen = "Ejercicio04.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 6", Descripcion = "Código ASCII a Carácter.", Url = "/Ejercicio06", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 8", Descripcion = "Verificar si un número está en los primeros 30 de la serie de Fibonacci.", Url = "/Ejercicio08", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 10", Descripcion = "Obtener el primer dígito de un número entero.", Url = "/Ejercicio10", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 12", Descripcion = "Verificar si un dígito está presente en un número entero.", Url = "/Ejercicio12", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 14", Descripcion = "Encontrar el mayor de dos números enteros.", Url = "/Ejercicio14", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 16", Descripcion = "Verificar código ASCII de una letra minúscula.", Url = "/Ejercicio16", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 18", Descripcion = "Verificar si un número es el factorial de algún dígito.", Url = "/Ejercicio18", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 20", Descripcion = "Verificar si todos los dígitos son iguales.", Url = "/Ejercicio20", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 22", Descripcion = "Verificar si un número es múltiplo de 5.", Url = "/Ejercicio22", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 24", Descripcion = "Verificar si dos números son inversos.", Url = "/Ejercicio24", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 26", Descripcion = "Mayor número del vector.", Url = "/Ejercicio26", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 28", Descripcion = "Contar números primos en el vector.", Url = "/Ejercicio28", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 30", Descripcion = "Encontrar la posición del mayor número primo en el vector.", Url = "/Ejercicio30", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 32", Descripcion = "Promedio real de un vector de 10 posiciones.", Url = "/Ejercicio32", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 34", Descripcion = "Posición del número con mayor cantidad de dígitos.", Url = "/Ejercicio34", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 36", Descripcion = "Obtener el elemento de la serie de Fibonacci.", Url = "/Ejercicio36", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 38", Descripcion = "Cantidad de números terminados en 3.", Url = "/Ejercicio38", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 40", Descripcion = "Cantidad de números que terminan en un dígito específico.", Url = "/Ejercicio40", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 42", Descripcion = "Cantidad de números primos en una matriz 3x4.", Url = "/Ejercicio42", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 44", Descripcion = "Cantidad de veces que se repite el mayor número primo en una matriz 3x4.", Url = "/Ejercicio44", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 46", Descripcion = "Fila con el mayor número de una matriz 4x4.", Url = "/Ejercicio46", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 48", Descripcion = "Posición del mayor número primo en una matriz 4x4.", Url = "/Ejercicio48", Imagen = "ejemplo.jpeg"},
+        new Ejercicio {Titulo = "Ejercicio 50", Descripcion = "Cantidad de veces que se repite la moda en una matriz 5x5.", Url = "/Ejercicio50", Imagen = "ejemplo.jpeg"}
+    };
+}
+ *@
+
+ @page "/Menú-Ejercicios"
+@rendermode InteractiveServer
+
+<PageTitle>Menú de Ejercicios</PageTitle>
+
+@if (mostrarImagen)
+{
+    <p>Vista previa de la imagen</p>
+
+    <div class="embed-responsive embed-responsive-16by9" style="max-width:900px;">
+        <img class="img-fluid" style="width:100%; height:600px" src="@imagenUrl" alt="Vista previa de la imagen" />
+    </div>
+
+    <button class="btn btn-primary" @onclick="()=>mostrarImagen = false">Cerrar Imagen</button>
+}
+else
+{
+    <h1 class="titulo-menu">Menú de Ejercicios</h1>
+
+    <p class="texto-menu">A continuación puedes seleccionar un ejercicio para ir a su respectiva página o visualizar su imagen.</p>
+
+    <div class="container-cartas">
+        <div class="row">
+            @foreach (var ejercicio in ejercicios)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <img @onclick="()=>verImagen(ejercicio)" class="card-img-top" src="Images/@(ejercicio.Imagen)" />
+                        <div class="card-body">
+                            <h5 class="card-title">@ejercicio.Titulo</h5>
+                            <p class="card-text">@ejercicio.Descripcion</p>
+                            <a href="@ejercicio.Url" class="btn btn-outline-primary">Ir al Ejercicio</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    bool mostrarImagen = false;
+    string imagenUrl = "";
+
+    class Ejercicio
+    {
+        public string Titulo { get; set; } = "";
+        public string Descripcion { get; set; } = "";
+        public string Url { get; set; } = "";
+        public string Imagen { get; set; } = ""; // Nombre de la imagen en la carpeta 'images'
+    }
+
+    void verImagen(Ejercicio ejercicio)
+    {
+        mostrarImagen = true;
+        imagenUrl = "Images/" + ejercicio.Imagen;
+        StateHasChanged();
+    }
+
+    List<Ejercicio> ejercicios = new List<Ejercicio>
+    {
+        new Ejercicio {Titulo = "Ejercicio 2", Descripcion = "Obtener los dos últimos dígitos de un entero, sean negativos o positivos.", Url = "/Ejercicio02", Imagen = "Ejercicio02.png"},
+        new Ejercicio {Titulo = "Ejercicio 4", Descripcion = "Contar la cantidad de dígitos pares ingresados, sean negativos o positivos.", Url = "/Ejercicio04", Imagen = "Ejercicio04.png"},
+        new Ejercicio {Titulo = "Ejercicio 6", Descripcion = "Traducir de Código ASCII a Caracter al ingresar un número entre el 32 y 126.", Url = "/Ejercicio06", Imagen = "Ejercicio06.png"},
+        new Ejercicio {Titulo = "Ejercicio 8", Descripcion = "Verificar si un número está en los primeros 30 de la serie/sucesión de Fibonacci.", Url = "/Ejercicio08", Imagen = "Ejercicio08.png"},
+        new Ejercicio {Titulo = "Ejercicio 10", Descripcion = "Obtener el primer dígito de un número entero ingresado, sea negativo o positivo.", Url = "/Ejercicio10", Imagen = "Ejercicio10.png"},
+        new Ejercicio {Titulo = "Ejercicio 12", Descripcion = "Verificar si un dígito especificado está presente en un número entero ingresado.", Url = "/Ejercicio12", Imagen = "Ejercicio12.png"},
+        new Ejercicio {Titulo = "Ejercicio 14", Descripcion = "Encontrar el mayor de dos números enteros.", Url = "/Ejercicio14", Imagen = "Ejercicio14.png"},
+        new Ejercicio {Titulo = "Ejercicio 16", Descripcion = "Verificar código ASCII de una letra minúscula.", Url = "/Ejercicio16", Imagen = "Ejercicio16.png"},
+        new Ejercicio {Titulo = "Ejercicio 18", Descripcion = "Verificar si un número es el factorial de algún dígito.", Url = "/Ejercicio18", Imagen = "Ejercicio18.png"},
+        new Ejercicio {Titulo = "Ejercicio 20", Descripcion = "Verificar si todos los dígitos son iguales.", Url = "/Ejercicio20", Imagen = "Ejercicio20.png"},
+        new Ejercicio {Titulo = "Ejercicio 22", Descripcion = "Verificar si un número es múltiplo de 5.", Url = "/Ejercicio22", Imagen = "Ejercicio22.png"},
+        new Ejercicio {Titulo = "Ejercicio 24", Descripcion = "Verificar si dos números son inversos.", Url = "/Ejercicio24", Imagen = "Ejercicio24.png"},
+        new Ejercicio {Titulo = "Ejercicio 26", Descripcion = "Mayor número del vector.", Url = "/Ejercicio26", Imagen = "Ejercicio26.png"},
+        new Ejercicio {Titulo = "Ejercicio 28", Descripcion = "Contar números primos en el vector.", Url = "/Ejercicio28", Imagen = "Ejercicio28.png"},
+        new Ejercicio {Titulo = "Ejercicio 30", Descripcion = "Encontrar la posición del mayor número primo en el vector.", Url = "/Ejercicio30", Imagen = "Ejercicio30.png"},
+        new Ejercicio {Titulo = "Ejercicio 32", Descripcion = "Promedio real de un vector de 10 posiciones.", Url = "/Ejercicio32", Imagen = "Ejercicio32.png"},
+        new Ejercicio {Titulo = "Ejercicio 34", Descripcion = "Posición del número con mayor cantidad de dígitos.", Url = "/Ejercicio34", Imagen = "Ejercicio34.png"},
+        new Ejercicio {Titulo = "Ejercicio 36", Descripcion = "Obtener el elemento de la serie de Fibonacci.", Url = "/Ejercicio36", Imagen = "Ejercicio36.png"},
+        new Ejercicio {Titulo = "Ejercicio 38", Descripcion = "Cantidad de números terminados en 3.", Url = "/Ejercicio38", Imagen = "Ejercicio38.png"},
+        new Ejercicio {Titulo = "Ejercicio 40", Descripcion = "Cantidad de números que terminan en un dígito específico.", Url = "/Ejercicio40", Imagen = "Ejercicio40.png"},
+        new Ejercicio {Titulo = "Ejercicio 42", Descripcion = "Cantidad de números primos en una matriz 3x4.", Url = "/Ejercicio42", Imagen = "Ejercicio42.png"},
+        new Ejercicio {Titulo = "Ejercicio 44", Descripcion = "Cantidad de veces que se repite el mayor número primo en una matriz 3x4.", Url = "/Ejercicio44", Imagen = "Ejercicio44.png"},
+        new Ejercicio {Titulo = "Ejercicio 46", Descripcion = "Fila con el mayor número de una matriz 4x4.", Url = "/Ejercicio46", Imagen = "Ejercicio46.png"},
+        new Ejercicio {Titulo = "Ejercicio 48", Descripcion = "Posición del mayor número primo en una matriz 4x4.", Url = "/Ejercicio48", Imagen = "Ejercicio48.png"},
+        new Ejercicio {Titulo = "Ejercicio 50", Descripcion = "Cantidad de veces que se repite la moda en una matriz 5x5.", Url = "/Ejercicio50", Imagen = "Ejercicio50.png"}
+    };
+}

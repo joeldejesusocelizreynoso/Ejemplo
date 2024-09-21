@@ -1,0 +1,130 @@
+﻿@* @page "/Ejercicio10"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 10: Obtener el primer dígito de un número entero</h3>
+
+<div>
+    <label>Introduce un número entero:</label>
+    <input @bind-value="numero" @bind-value:event="oninput" type="number" />
+    <button class="btn btn-outline-primary" @onclick="Calcular">Obtener Primer Dígito</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    <p>El primer dígito de @numero es: @primerDigito</p>
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private int numero;
+    private int primerDigito;
+
+    private void Calcular()
+    {
+        primerDigito = ObtenerPrimerDigito(numero);
+    }
+
+    private void Limpiar()
+    {
+        numero = 0;
+        primerDigito = 0;
+    }
+
+    private int ObtenerPrimerDigito(int numero)
+    {
+        // Convertir el número a positivo si es negativo
+        numero = Math.Abs(numero);
+
+        // Dividir el número hasta obtener el primer dígito
+        while (numero >= 10)
+        {
+            numero /= 10;
+        }
+
+        return numero;
+    }
+}
+ *@
+
+ @page "/Ejercicio10"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 10: Obtener el primer dígito de un número entero</h3>
+
+<div>
+    <label>Introduce un número entero:</label>
+    <input @bind-value="numeroInput" @bind-value:event="oninput" type="text" />
+    <button class="btn btn-outline-primary" @onclick="Calcular">Obtener Primer Dígito</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else if (primerDigito != 0)
+    {
+        <p>El primer dígito de @numeroInput es: @primerDigito</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numeroInput = "";  // Se recibe como string para facilitar la validación
+    private int primerDigito;
+    private string mensajeError = "";
+
+    private void Calcular()
+    {
+        mensajeError = "";
+        primerDigito = 0;
+
+        // Verificar si el input está vacío
+        if (string.IsNullOrWhiteSpace(numeroInput))
+        {
+            mensajeError = "No se ha introducido ningún número.";
+            return;
+        }
+
+        // Intentamos convertir el input a número entero
+        if (int.TryParse(numeroInput, out int numero))
+        {
+            if (numero == 0)
+            {
+                mensajeError = "El número no puede ser 0.";
+            }
+            else
+            {
+                primerDigito = ObtenerPrimerDigito(numero);
+            }
+        }
+        else
+        {
+            mensajeError = "El valor introducido no es un número entero válido.";
+        }
+    }
+
+    private void Limpiar()
+    {
+        numeroInput = "";
+        primerDigito = 0;
+        mensajeError = "";
+    }
+
+    private int ObtenerPrimerDigito(int numero)
+    {
+        // Convertir el número a positivo si es negativo
+        numero = Math.Abs(numero);
+
+        // Dividir el número hasta obtener el primer dígito
+        while (numero >= 10)
+        {
+            numero /= 10;
+        }
+
+        return numero;
+    }
+}

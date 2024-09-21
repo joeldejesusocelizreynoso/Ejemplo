@@ -1,0 +1,80 @@
+﻿@page "/Ejercicio20"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 20: Verificar si todos los dígitos son iguales</h3>
+
+<div>
+    <label>Introduce un número entero:</label>
+    <input @bind="numeroInput" @bind:event="oninput" type="text" />
+
+    <button class="btn btn-outline-primary" @onclick="VerificarDigitosIguales">Verificar</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else
+    {
+        <p>Todos los dígitos son iguales: @(resultado == 1 ? 1 : 0)</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numeroInput = "";  // Usado como string para validar
+    private int resultado = 0;
+    private string mensajeError = "";
+
+    private void VerificarDigitosIguales()
+    {
+        mensajeError = "";
+
+        // Validar si el input está vacío
+        if (string.IsNullOrWhiteSpace(numeroInput))
+        {
+            mensajeError = "Por favor, introduce un número entero.";
+            return;
+        }
+
+        // Verificar si el valor ingresado es un número entero válido (incluyendo negativos)
+        if (int.TryParse(numeroInput, out int numero))
+        {
+            // Si es válido, proceder con la verificación
+            resultado = TodosLosDigitosIguales(Math.Abs(numero));  // Ignorar el signo negativo
+        }
+        else
+        {
+            mensajeError = "Por favor, introduce un número entero válido.";
+        }
+    }
+
+    private void Limpiar()
+    {
+        numeroInput = "";
+        resultado = 0;
+        mensajeError = "";
+    }
+
+    private int TodosLosDigitosIguales(int num)
+    {
+        // Convertir el número a string (ignorando el signo negativo si es negativo)
+        string numeroStr = num.ToString();
+
+        // Comparar todos los dígitos con el primer dígito
+        char primerDigito = numeroStr[0];
+
+        foreach (char digito in numeroStr)
+        {
+            if (digito != primerDigito)
+            {
+                return 0; // Retorna 0 si algún dígito es diferente
+            }
+        }
+
+        return 1; // Retorna 1 si todos los dígitos son iguales
+    }
+}

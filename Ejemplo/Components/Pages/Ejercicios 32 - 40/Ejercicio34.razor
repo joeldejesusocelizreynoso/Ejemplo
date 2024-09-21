@@ -1,0 +1,113 @@
+﻿@page "/Ejercicio34"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 34: Posición del número con mayor cantidad de dígitos</h3>
+
+<div>
+    <label>Introduce 10 números separados por espacios:</label>
+    <input @bind-value="numerosInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 123 45 6789 0 ..." />
+    <button class="btn btn-outline-primary" @onclick="CalcularPosicionMayorDigitos">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    <p style="color:@(esError ? "red" : "black")">@mensaje</p>
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numerosInput = "";
+    private string mensaje = "";
+    private bool esError = false; // Variable para determinar si es un mensaje de error
+
+    private void CalcularPosicionMayorDigitos()
+    {
+        mensaje = "";
+        esError = false;
+
+        // Validar si el input está vacío
+        if (string.IsNullOrWhiteSpace(numerosInput))
+        {
+            mensaje = "Por favor, introduce los números.";
+            esError = true;
+            return;
+        }
+
+        // Dividimos el input y verificamos si contiene exactamente 10 números
+        string[] numerosString = numerosInput.Split(' ');
+
+        if (numerosString.Length != 10)
+        {
+            mensaje = "Debes introducir exactamente 10 números separados por espacios ( ), y en dado caso no debe tener letras, solo números.";
+            esError = true;
+            return;
+        }
+
+        try
+        {
+            // Convertir los valores a enteros y calcular la posición con mayor cantidad de dígitos
+            int[] vectorNumeros = numerosString.Select(n => int.Parse(n.Trim())).ToArray();
+            mensaje = ObtenerPosicionMayorDigitos(vectorNumeros);
+        }
+        catch (FormatException)
+        {
+            mensaje = "Asegúrate de que todos los valores sean números enteros válidos.";
+            esError = true;
+        }
+    }
+
+    // Función para convertir la cadena de entrada en un vector de enteros
+    private int[] ObtenerVectorDesdeInput(string input)
+    {
+        string[] numerosString = input.Split(' ');
+        int[] vector = new int[numerosString.Length];
+
+        for (int i = 0; i < numerosString.Length; i++)
+        {
+            vector[i] = int.Parse(numerosString[i]);
+        }
+
+        return vector;
+    }
+
+    // Función para obtener la posición del número con mayor cantidad de dígitos
+    private string ObtenerPosicionMayorDigitos(int[] vector)
+    {
+        int maxDigitos = vector[0].ToString().Length;
+        int posicion = 0;
+        bool todosIguales = true;
+
+        for (int i = 1; i < vector.Length; i++)
+        {
+            int digitosActual = vector[i].ToString().Length;
+
+            if (digitosActual > maxDigitos)
+            {
+                maxDigitos = digitosActual;
+                posicion = i;
+                todosIguales = false;
+            }
+            else if (digitosActual != maxDigitos)
+            {
+                todosIguales = false;
+            }
+        }
+
+        // Si todos tienen la misma cantidad de dígitos
+        if (todosIguales)
+        {
+            return "Todos los números tienen la misma cantidad de dígitos.";
+        }
+
+        // Retornar la posición sumando 1 para que no inicie en 0
+        return $"La posición del número con mayor cantidad de dígitos es: {posicion + 1}.";
+    }
+
+    private void Limpiar()
+    {
+        numerosInput = "";
+        mensaje = "";
+        esError = false;
+    }
+}

@@ -1,0 +1,324 @@
+﻿@* @page "/Ejercicio50"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 50: Cantidad de veces que se repite la moda en una matriz 5x5</h3>
+
+<div>
+    <label>Introduce 25 números separados por espacios (para la matriz 5x5):</label>
+    <input @bind-value="numerosInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 1 2 3 5 7 11 ..." />
+</div>
+
+<div>
+    <button class="btn btn-outline-primary" @onclick="CalcularModaEnMatriz">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="LimpiarResultados">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red">@mensajeError</p>
+    }
+    else if (calculoRealizado && modas.Count == 0)
+    {
+        <p>No se encontró ninguna moda en la matriz.</p>
+    }
+    else if (calculoRealizado && modas.Count == 1)
+    {
+        <p>La moda es: @modas.First().Key</p>
+        <p>Se repite: @modas.First().Value veces</p>
+    }
+    else if (calculoRealizado && modas.Count > 1)
+    {
+        <p>Hay varias modas en la matriz:</p>
+        <ul>
+            @foreach (var moda in modas)
+            {
+                <li>La moda @moda.Key se repite @moda.Value veces</li>
+            }
+        </ul>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numerosInput;
+    private int[,] matriz = new int[5, 5]; // Matriz 5x5
+    private Dictionary<int, int> modas = new(); // Almacenar modas y sus frecuencias
+    private string mensajeError = "";
+    private bool calculoRealizado = false; // Verificar si el cálculo se ha realizado
+
+    private void CalcularModaEnMatriz()
+    {
+        mensajeError = ""; // Limpiar mensajes previos
+        modas.Clear(); // Reiniciar la lista de modas
+        calculoRealizado = false; // Reiniciar la variable de verificación
+
+        if (string.IsNullOrWhiteSpace(numerosInput))
+        {
+            mensajeError = "No se ha introducido ningún número. Vuelva a intentarlo.";
+            Limpiar();
+            return;
+        }
+
+        int[] vectorNumeros = ObtenerVectorDesdeInput(numerosInput);
+
+        // Validación para comprobar si el número de entradas es exactamente 25
+        if (vectorNumeros.Length != 25)
+        {
+            mensajeError = "No se ha introducido la cantidad de números especificados. Vuelva a intentarlo.";
+            Limpiar();
+            return;
+        }
+
+        LlenarMatriz(vectorNumeros);
+        ObtenerModas(matriz);
+        calculoRealizado = true; // Indicar que el cálculo se ha realizado
+    }
+
+    // Función para convertir la cadena de entrada en un vector de enteros
+    private int[] ObtenerVectorDesdeInput(string input)
+    {
+        string[] numerosString = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        int[] vector = new int[numerosString.Length];
+
+        for (int i = 0; i < numerosString.Length; i++)
+        {
+            vector[i] = int.Parse(numerosString[i]);
+        }
+
+        return vector;
+    }
+
+    // Función para llenar la matriz 5x5 con el vector de entrada
+    private void LlenarMatriz(int[] vector)
+    {
+        int contador = 0;
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                matriz[i, j] = vector[contador];
+                contador++;
+            }
+        }
+    }
+
+    // Función para obtener las modas de la matriz
+    private void ObtenerModas(int[,] matriz)
+    {
+        Dictionary<int, int> frecuencias = new();
+
+        // Contar las frecuencias de cada número en la matriz
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                int numero = matriz[i, j];
+                if (frecuencias.ContainsKey(numero))
+                {
+                    frecuencias[numero]++;
+                }
+                else
+                {
+                    frecuencias[numero] = 1;
+                }
+            }
+        }
+
+        // Obtener la(s) moda(s), es decir, el(los) número(s) con la frecuencia más alta
+        int maxFrecuencia = frecuencias.Values.Max();
+
+        // Si la máxima frecuencia es mayor a 1, identificar las modas
+        if (maxFrecuencia > 1)
+        {
+            foreach (var par in frecuencias)
+            {
+                if (par.Value == maxFrecuencia)
+                {
+                    modas[par.Key] = par.Value;
+                }
+            }
+        }
+    }
+
+    private void Limpiar()
+    {
+        numerosInput = "";
+        modas.Clear();
+        calculoRealizado = false;
+    }
+
+    private void LimpiarResultados()
+    {
+        numerosInput = "";
+        modas.Clear();
+        mensajeError = "";
+        calculoRealizado = false;
+    }
+}
+ *@
+
+ @page "/Ejercicio50"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 50: Cantidad de veces que se repite la moda en una matriz 5x5</h3>
+
+<div>
+    <label>Introduce 25 números separados por espacios (para la matriz 5x5):</label>
+    <input @bind-value="numerosInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 1 2 3 5 7 11 ..." />
+</div>
+
+<div>
+    <button class="btn btn-outline-primary" @onclick="CalcularModaEnMatriz">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="LimpiarResultados">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red">@mensajeError</p>
+    }
+    else if (calculoRealizado && modas.Count == 0)
+    {
+        <p>No se encontró ninguna moda en la matriz.</p>
+    }
+    else if (calculoRealizado && modas.Count == 1)
+    {
+        <p>La moda es: @modas.First().Key</p>
+        <p>Se repite: @modas.First().Value veces</p>
+    }
+    else if (calculoRealizado && modas.Count > 1)
+    {
+        <p>Hay varias modas en la matriz:</p>
+        <ul>
+            @foreach (var moda in modas)
+            {
+                <li>La moda @moda.Key se repite @moda.Value veces</li>
+            }
+        </ul>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numerosInput;
+    private int[,] matriz = new int[5, 5]; // Matriz 5x5
+    private Dictionary<int, int> modas = new(); // Almacenar modas y sus frecuencias
+    private string mensajeError = "";
+    private bool calculoRealizado = false; // Verificar si el cálculo se ha realizado
+
+    private void CalcularModaEnMatriz()
+    {
+        mensajeError = ""; // Limpiar mensajes previos
+        modas.Clear(); // Reiniciar la lista de modas
+        calculoRealizado = false; // Reiniciar la variable de verificación
+
+        if (string.IsNullOrWhiteSpace(numerosInput))
+        {
+            mensajeError = "No se ha introducido ningún número. Vuelva a intentarlo.";
+            Limpiar();
+            return;
+        }
+
+        int[] vectorNumeros = ObtenerVectorDesdeInput(numerosInput);
+
+        // Validación para comprobar si el número de entradas es exactamente 25
+        if (vectorNumeros.Length != 25)
+        {
+            mensajeError = "No se ha introducido la cantidad de números especificados o se ha ingresado letras y eso no procede, debe ser números. Vuelva a intentarlo.";
+            Limpiar();
+            return;
+        }
+
+        LlenarMatriz(vectorNumeros);
+        ObtenerModas(matriz);
+        calculoRealizado = true; // Indicar que el cálculo se ha realizado
+    }
+
+    // Función para convertir la cadena de entrada en un vector de enteros con validación de letras
+    private int[] ObtenerVectorDesdeInput(string input)
+    {
+        string[] numerosString = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        int[] vector = new int[numerosString.Length];
+
+        for (int i = 0; i < numerosString.Length; i++)
+        {
+            if (!int.TryParse(numerosString[i], out vector[i]))
+            {
+                mensajeError = $"El valor '{numerosString[i]}' no es un número entero válido. Por favor, ingrese solo números.";
+                return new int[0]; // Retornar un vector vacío para indicar un error
+            }
+        }
+
+        return vector;
+    }
+
+    // Función para llenar la matriz 5x5 con el vector de entrada
+    private void LlenarMatriz(int[] vector)
+    {
+        int contador = 0;
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                matriz[i, j] = vector[contador];
+                contador++;
+            }
+        }
+    }
+
+    // Función para obtener las modas de la matriz
+    private void ObtenerModas(int[,] matriz)
+    {
+        Dictionary<int, int> frecuencias = new();
+
+        // Contar las frecuencias de cada número en la matriz
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < 5; j++)
+            {
+                int numero = matriz[i, j];
+                if (frecuencias.ContainsKey(numero))
+                {
+                    frecuencias[numero]++;
+                }
+                else
+                {
+                    frecuencias[numero] = 1;
+                }
+            }
+        }
+
+        // Obtener la(s) moda(s), es decir, el(los) número(s) con la frecuencia más alta
+        int maxFrecuencia = frecuencias.Values.Max();
+
+        // Si la máxima frecuencia es mayor a 1, identificar las modas
+        if (maxFrecuencia > 1)
+        {
+            foreach (var par in frecuencias)
+            {
+                if (par.Value == maxFrecuencia)
+                {
+                    modas[par.Key] = par.Value;
+                }
+            }
+        }
+    }
+
+    private void Limpiar()
+    {
+        numerosInput = "";
+        modas.Clear();
+        calculoRealizado = false;
+    }
+
+    private void LimpiarResultados()
+    {
+        numerosInput = "";
+        modas.Clear();
+        mensajeError = "";
+        calculoRealizado = false;
+    }
+}

@@ -1,0 +1,83 @@
+﻿@page "/Ejercicio06"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 6: Código ASCII a Caracter</h3>
+
+<div>
+    <label>Introduce un número entero:</label>
+    <input @bind-value="numeroInput" @bind-value:event="oninput" type="number" />
+    <button class="btn btn-outline-primary" @onclick="Calcular">Convertir a Carácter</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else if (!string.IsNullOrEmpty(resultado))
+    {
+        <p>El carácter correspondiente al código ASCII es: @resultado</p>
+    }
+</div>
+
+<p>Nota: El código ASCII abarca desde el 32 hasta 126.</p>
+<p>
+    Códigos imprimibles: del 32 al 126.
+
+    Estos son caracteres visibles, como letras, números, símbolos y signos de puntuación. Dentro de este rango se encuentran:<br />
+    Espacio (32).<br />
+    Dígitos (48-57).<br />
+    Letras mayúsculas (65-90).<br />
+    Letras minúsculas (97-122).<br />
+    Varios símbolos de puntuación y otros caracteres (33-47, 58-64, 91-96, 123-126).<br />
+    Por lo tanto, el rango general de los códigos ASCII es de 0 a 127, pero solo los números entre 32 y 126 corresponden a caracteres visibles.
+</p>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numeroInput = "";  // Se recibe el valor como string para validar vacío
+    private string? resultado;
+    private string mensajeError = "";
+
+    private void Calcular()
+    {
+        mensajeError = "";
+        resultado = "";
+
+        if (string.IsNullOrWhiteSpace(numeroInput))
+        {
+            mensajeError = "No se ha introducido ningún número.";
+            return;
+        }
+
+        // Intentamos convertir el input a número entero
+        if (int.TryParse(numeroInput, out int numero))
+        {
+            // Validamos el rango de código ASCII imprimible
+            if (numero >= 32 && numero <= 126)
+            {
+                resultado = char.ConvertFromUtf32(numero);
+            }
+            else
+            {
+                mensajeError = "El valor está fuera del rango permitido (32 a 126), vuelva a intentarlo.";
+            }
+        }
+        else
+        {
+            mensajeError = "El valor introducido no es un número entero válido.";
+        }
+
+        // Forzamos actualización de la interfaz
+        StateHasChanged();
+    }
+
+    private void Limpiar()
+    {
+        numeroInput = "";
+        resultado = "";
+        mensajeError = "";
+    }
+}

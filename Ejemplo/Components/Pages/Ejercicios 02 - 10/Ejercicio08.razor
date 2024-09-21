@@ -1,0 +1,88 @@
+﻿@page "/Ejercicio08"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 8: Verificar si un número está en los primeros 30 de la serie de Fibonacci</h3>
+
+<div>
+    <label>Introduce un número entero:</label>
+    <input @bind-value="numeroInput" @bind-value:event="oninput" type="text" />
+    <button class="btn btn-outline-primary" @onclick="Calcular">Verificar en la serie de Fibonacci</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else if (resultado != null)
+    {
+        <p>El resultado es: @resultado</p>
+    }
+</div>
+
+<p>Es una secuencia infinita de números naturales cuyos dos primeros términos son 1 y 1, y cualquier otro término se obtiene sumando los dos inmediatamente anteriores.</p>
+<p><a href="https://www2.ual.es/jardinmatema/sucesion-de-fibonacci/">Más sobre La Sucesión de Fibonacci</a></p>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numeroInput = "";  // Se recibe el valor como string para validar vacío
+    private string? resultado;
+    private string mensajeError = "";
+
+    private void Calcular()
+    {
+        mensajeError = "";
+        resultado = null;
+
+        // Verificar si el input está vacío
+        if (string.IsNullOrWhiteSpace(numeroInput))
+        {
+            mensajeError = "No se ha introducido ningún número.";
+            return;
+        }
+
+        // Intentamos convertir el input a número entero
+        if (int.TryParse(numeroInput, out int numero))
+        {
+            // Verificar si el número está en los primeros 30 de la serie Fibonacci
+            int estaEnFibonacci = VerificarFibonacci(numero);
+            resultado = estaEnFibonacci.ToString(); // Convertir el resultado a string para mostrarlo
+        }
+        else
+        {
+            mensajeError = "El valor introducido no es un número entero válido.";
+        }
+    }
+
+    private void Limpiar()
+    {
+        numeroInput = "";
+        resultado = null;
+        mensajeError = "";
+    }
+
+    private int VerificarFibonacci(int numero)
+    {
+        // Los primeros 30 elementos de la serie de Fibonacci
+        int[] fibonacci = new int[30];
+        fibonacci[0] = 0;
+        fibonacci[1] = 1;
+        for (int i = 2; i < 30; i++)
+        {
+            fibonacci[i] = fibonacci[i - 1] + fibonacci[i - 2];
+        }
+
+        // Verificar si el número está en la serie de Fibonacci
+        foreach (int num in fibonacci)
+        {
+            if (num == numero)
+            {
+                return 1; // Retorna 1 si está en la serie
+            }
+        }
+
+        return 0; // Retorna 0 si no está en la serie
+    }
+}

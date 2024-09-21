@@ -1,0 +1,70 @@
+﻿@page "/Ejercicio14"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 14: Encontrar el mayor de dos números enteros</h3>
+
+<div>
+    <label>Introduce el primer número entero:</label>
+    <input @bind="numero1Input" @bind:event="oninput" type="text" />
+
+    <label>Introduce el segundo número entero:</label>
+    <input @bind="numero2Input" @bind:event="oninput" type="text" />
+
+    <button class="btn btn-outline-primary" @onclick="CalcularMayor">Calcular Mayor</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else
+    {
+        <p>El mayor de los dos números es: @resultado</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numero1Input = "";
+    private string numero2Input = "";
+    private string mensajeError = "";
+    private int resultado;
+
+    private void CalcularMayor()
+    {
+        mensajeError = "";
+
+        // Validar que los inputs no estén vacíos
+        if (string.IsNullOrWhiteSpace(numero1Input) || string.IsNullOrWhiteSpace(numero2Input))
+        {
+            mensajeError = "Ambos campos deben contener un número.";
+            return;
+        }
+
+        // Intentar convertir los inputs a números enteros
+        if (int.TryParse(numero1Input, out int numero1) && int.TryParse(numero2Input, out int numero2))
+        {
+            resultado = EncontrarMayor(numero1, numero2);
+        }
+        else
+        {
+            mensajeError = "Por favor, introduce números enteros válidos.";
+        }
+    }
+
+    private void Limpiar()
+    {
+        numero1Input = "";
+        numero2Input = "";
+        resultado = 0;
+        mensajeError = "";
+    }
+
+    private int EncontrarMayor(int num1, int num2)
+    {
+        return num1 > num2 ? num1 : num2;
+    }
+}

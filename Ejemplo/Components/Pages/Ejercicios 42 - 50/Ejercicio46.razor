@@ -1,0 +1,153 @@
+﻿@page "/Ejercicio46"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 46: Fila con el mayor número en una matriz 4x4</h3>
+
+<div>
+    <label>Introduce 16 números separados por espacios (para la matriz 4x4):</label>
+    <input @bind-value="numerosInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 1 2 3 4 5 6 7 8 ..." />
+</div>
+
+<div>
+    <button class="btn btn-outline-primary" @onclick="CalcularMayorNumeroFila">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="LimpiarResultados">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red">@mensajeError</p>
+    }
+    else if (numeroMayor == -1)
+    {
+        <p>No se encontró ningún número válido en la matriz.</p>
+    }
+    else
+    {
+        <p>El mayor número de la matriz es: @numeroMayor</p>
+        <p>Se encuentra en las siguientes posiciones:</p>
+        <ul>
+            @foreach (var posicion in posicionesMayorNumero)
+            {
+                <li>Fila: @posicion.fila, Columna: @posicion.columna</li>
+            }
+        </ul>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numerosInput;
+    private int[,] matriz = new int[4, 4]; // Matriz 4x4
+    private int numeroMayor = -1;
+    private List<(int fila, int columna)> posicionesMayorNumero = new List<(int fila, int columna)>();
+    private string mensajeError = "";
+
+    private void CalcularMayorNumeroFila()
+    {
+        mensajeError = ""; // Limpiar mensajes previos
+        numeroMayor = -1;  // Reiniciar valores
+        posicionesMayorNumero.Clear();
+
+        if (string.IsNullOrWhiteSpace(numerosInput))
+        {
+            mensajeError = "No se ha introducido ningún número. Vuelva a intentarlo.";
+            Limpiar();
+            return;
+        }
+
+        int[] vectorNumeros = ObtenerVectorDesdeInput(numerosInput);
+
+        // Validación para comprobar si el número de entradas es exactamente 16
+        if (vectorNumeros.Length != 16)
+        {
+            mensajeError = "Se deben introducir exactamente 16 números. Vuelva a intentarlo.";
+            Limpiar();
+            return;
+        }
+
+        LlenarMatriz(vectorNumeros);
+        numeroMayor = ObtenerMayorNumero(matriz);
+        ObtenerPosicionesMayorNumero(matriz, numeroMayor);
+    }
+
+    // Función para convertir la cadena de entrada en un vector de enteros
+    private int[] ObtenerVectorDesdeInput(string input)
+    {
+        string[] numerosString = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        int[] vector = new int[numerosString.Length];
+
+        for (int i = 0; i < numerosString.Length; i++)
+        {
+            if (!int.TryParse(numerosString[i], out vector[i]))
+            {
+                mensajeError = $"El valor '{numerosString[i]}' no es un número entero válido.";
+                return new int[0]; // Retornar un vector vacío para indicar un error
+            }
+        }
+
+        return vector;
+    }
+
+    // Función para llenar la matriz 4x4 con el vector de entrada
+    private void LlenarMatriz(int[] vector)
+    {
+        int contador = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                matriz[i, j] = vector[contador];
+                contador++;
+            }
+        }
+    }
+
+    // Función para obtener el mayor número de la matriz
+    private int ObtenerMayorNumero(int[,] matriz)
+    {
+        int maxNumero = matriz[0, 0]; // Iniciamos con el primer elemento de la matriz
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (matriz[i, j] > maxNumero)
+                {
+                    maxNumero = matriz[i, j];
+                }
+            }
+        }
+
+        return maxNumero;
+    }
+
+    // Función para obtener todas las posiciones (fila y columna) donde se encuentra el mayor número
+    private void ObtenerPosicionesMayorNumero(int[,] matriz, int maxNumero)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (matriz[i, j] == maxNumero)
+                {
+                    posicionesMayorNumero.Add((i + 1, j + 1)); // Almacenar la posición (fila, columna) con base 1
+                }
+            }
+        }
+    }
+
+    private void Limpiar()
+    {
+        numerosInput = "";
+        numeroMayor = -1;
+        posicionesMayorNumero.Clear();
+    }
+
+    private void LimpiarResultados()
+    {
+        Limpiar();
+        mensajeError = "";
+    }
+}

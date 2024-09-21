@@ -1,0 +1,77 @@
+﻿@page "/Ejercicio26"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 26: Mayor número del vector</h3>
+
+<div>
+    <label>Introduce los 10 números del vector separados por comas:</label>
+    <input @bind-value="inputVector" @bind-value:event="oninput" type="text" placeholder="Ej: 3, 5, 1, 9, 2, 8, 7, 6, 4, 0" />
+    <button class="btn btn-outline-primary" @onclick="CalcularMayor">Calcular Mayor</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else
+    {
+        <p>El mayor número del vector es: @mayor</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string inputVector = "";
+    private int mayor = 0;
+    private string mensajeError = "";
+
+    private void CalcularMayor()
+    {
+        mensajeError = "";
+
+        // Validar si el input está vacío
+        if (string.IsNullOrWhiteSpace(inputVector))
+        {
+            mensajeError = "Por favor, introduce los números del vector.";
+            return;
+        }
+
+        // Dividimos el input en un array y verificamos si contiene exactamente 10 elementos
+        string[] numeros = inputVector.Split(',');
+
+        if (numeros.Length != 10)
+        {
+            mensajeError = "El vector debe contener exactamente 10 números separados por comas (,), y en dado caso no debe tener letras, solo números.";
+            return;
+        }
+
+        // Intentar convertir los valores a enteros y validar
+        try
+        {
+            int[] vector = numeros.Select(n => int.Parse(n.Trim())).ToArray();
+
+            // Encontramos el mayor número en el vector
+            mayor = EncontrarMayor(vector);
+        }
+        catch (FormatException)
+        {
+            mensajeError = "Por favor, asegúrate de que todos los valores sean números enteros válidos.";
+        }
+    }
+
+    private int EncontrarMayor(int[] vector)
+    {
+        // Usamos el método Max() para encontrar el mayor número
+        return vector.Max();
+    }
+
+    private void Limpiar()
+    {
+        inputVector = "";
+        mayor = 0;
+        mensajeError = "";
+    }
+}

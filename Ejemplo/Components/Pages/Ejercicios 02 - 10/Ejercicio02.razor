@@ -1,0 +1,65 @@
+﻿@page "/Ejercicio02"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 2: Obtener dos últimos dígitos</h3>
+
+<div>
+    <label>Introduce un número entero:</label>
+    <input @bind-value="numeroInput" @bind-value:event="oninput" type="number" />
+    <button class="btn btn-outline-primary" @onclick="Calcular">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensaje))
+    {
+        <p style="color:red;">@mensaje</p>
+    }
+    else
+    {
+        <p>Los dos últimos dígitos son: @resultado</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numeroInput = "";
+    private string mensaje = "";
+    private int resultado;
+
+    private void Calcular()
+    {
+        mensaje = ""; // Reiniciar el mensaje
+        if (string.IsNullOrEmpty(numeroInput))
+        {
+            mensaje = "No se ha introducido ningún dígito. Por favor, introduce un número.";
+            resultado = 0;
+        }
+        else if (numeroInput.Length < 2)
+        {
+            mensaje = $"Se debe introducir dos o más dígitos para cumplir con el requisito. Pero por el momento su dígito introducido es: {numeroInput}";
+            resultado = 0;
+        }
+        else
+        {
+            // Si todo es correcto, calcular los dos últimos dígitos
+            if (int.TryParse(numeroInput, out int numero))
+            {
+                resultado = ObtenerDosUltimosDigitos(numero);
+            }
+        }
+    }
+
+    private void Limpiar()
+    {
+        numeroInput = "";
+        resultado = 0;
+        mensaje = "";
+    }
+
+    private int ObtenerDosUltimosDigitos(int numero)
+    {
+        return numero % 100;
+    }
+}

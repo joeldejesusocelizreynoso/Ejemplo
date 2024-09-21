@@ -1,0 +1,160 @@
+﻿@page "/Ejercicio44"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 44: Cantidad de veces que se repite el mayor número primo en una matriz 3x4</h3>
+
+<div>
+    <label>Introduce 12 números separados por espacios (para la matriz 3x4):</label>
+    <input @bind-value="numerosInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 2 3 5 8 11 13 ..." />
+</div>
+
+<div>
+    <button class="btn btn-outline-primary" @onclick="CalcularMayorPrimoRepetido">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="LimpiarResultados">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red">@mensajeError</p>
+    }
+    else if (mayorPrimo != -1)
+    {
+        <p>El mayor número primo es: @mayorPrimo</p>
+        <p>Cantidad de veces que se repite el mayor número primo: @cantidadRepeticiones</p>
+    }
+    else
+    {
+        <p>No hay números primos en la matriz.</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numerosInput;
+    private int[,] matriz = new int[3, 4]; // Matriz 3x4
+    private int mayorPrimo = -1;
+    private int cantidadRepeticiones = 0;
+    private string mensajeError = "";
+
+    private void CalcularMayorPrimoRepetido()
+    {
+        mensajeError = ""; // Limpiar el mensaje de error
+
+        // Comprobar si no se ha introducido ningún número
+        if (string.IsNullOrWhiteSpace(numerosInput))
+        {
+            mensajeError = "No se ha introducido ningún número. Vuelva a intentarlo.";
+            return;
+        }
+
+        int[] vectorNumeros = ObtenerVectorDesdeInput(numerosInput);
+
+        // Validación para comprobar si el número de entradas es exactamente 12
+        if (vectorNumeros.Length != 12)
+        {
+            mensajeError = "No se ha introducido la cantidad de números o tipo de digitos especificados. Vuelva a intentarlo.";
+            return;
+        }
+
+        LlenarMatriz(vectorNumeros);
+        mayorPrimo = ObtenerMayorPrimo(matriz);
+        cantidadRepeticiones = ContarRepeticiones(mayorPrimo, matriz);
+    }
+
+    // Función para convertir la cadena de entrada en un vector de enteros
+    private int[] ObtenerVectorDesdeInput(string input)
+    {
+        string[] numerosString = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        int[] vector = new int[numerosString.Length];
+
+        for (int i = 0; i < numerosString.Length; i++)
+        {
+            if (!int.TryParse(numerosString[i], out vector[i]))
+            {
+                mensajeError = $"El valor '{numerosString[i]}' no es un número entero válido.";
+                return new int[0]; // Retornar un vector vacío para indicar un error
+            }
+        }
+
+        return vector;
+    }
+
+    // Función para llenar la matriz 3x4 con el vector de entrada
+    private void LlenarMatriz(int[] vector)
+    {
+        int contador = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                matriz[i, j] = vector[contador];
+                contador++;
+            }
+        }
+    }
+
+    // Función para obtener el mayor número primo en la matriz
+    private int ObtenerMayorPrimo(int[,] matriz)
+    {
+        int maxPrimo = -1; // Iniciamos con un valor negativo para controlar que no haya primos
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                int numero = matriz[i, j];
+                if (EsPrimo(numero) && numero > maxPrimo)
+                {
+                    maxPrimo = numero;
+                }
+            }
+        }
+        return maxPrimo;
+    }
+
+    // Función para contar cuántas veces se repite un número en la matriz
+    private int ContarRepeticiones(int numero, int[,] matriz)
+    {
+        if (numero == -1) return 0; // No contamos repeticiones si no hay primos
+        int contador = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (matriz[i, j] == numero)
+                {
+                    contador++;
+                }
+            }
+        }
+        return contador;
+    }
+
+    // Función para verificar si un número es primo
+    private bool EsPrimo(int numero)
+    {
+        if (numero < 2) return false;
+        for (int i = 2; i <= Math.Sqrt(numero); i++)
+        {
+            if (numero % i == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void Limpiar()
+    {
+        numerosInput = "";
+        mayorPrimo = -1;
+        cantidadRepeticiones = 0;
+        mensajeError = "";
+    }
+
+    private void LimpiarResultados()
+    {
+        Limpiar();
+    }
+}

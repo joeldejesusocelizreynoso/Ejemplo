@@ -1,0 +1,67 @@
+﻿@page "/Ejercicio22"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 22: Verificar si un número es múltiplo de 5</h3>
+
+<div>
+    <label>Introduce un número entero:</label>
+    <input @bind-value="numeroInput" @bind-value:event="oninput" type="text" />
+
+    <button class="btn btn-outline-primary" @onclick="VerificarMultiploDeCinco">Verificar</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else
+    {
+        <p>Es múltiplo de 5: @(resultado == 1 ? 1 : 0)</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numeroInput = "";  // Usado como string para validar
+    private int resultado = 0;
+    private string mensajeError = "";
+
+    private void VerificarMultiploDeCinco()
+    {
+        mensajeError = "";
+
+        // Validar si el input está vacío
+        if (string.IsNullOrWhiteSpace(numeroInput))
+        {
+            mensajeError = "Por favor, introduce un número entero.";
+            return;
+        }
+
+        // Verificar si el valor ingresado es un número entero válido
+        if (int.TryParse(numeroInput, out int numero))
+        {
+            // Si es válido, proceder con la verificación de si es múltiplo de 5
+            resultado = EsMultiploDeCinco(numero);
+        }
+        else
+        {
+            mensajeError = "Por favor, introduce un número entero válido.";
+        }
+    }
+
+    private void Limpiar()
+    {
+        numeroInput = "";
+        resultado = 0;
+        mensajeError = "";
+    }
+
+    private int EsMultiploDeCinco(int num)
+    {
+        // Verificar si el número es múltiplo de 5
+        return num % 5 == 0 ? 1 : 0;
+    }
+}

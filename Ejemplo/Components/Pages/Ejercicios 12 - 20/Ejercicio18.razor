@@ -1,0 +1,87 @@
+﻿@page "/Ejercicio18"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 18: Verificar si un número es el factorial de algún dígito</h3>
+
+<div>
+    <label>Introduce un número entero:</label>
+    <input @bind="numeroInput" @bind:event="oninput" type="text" />
+
+    <button class="btn btn-outline-primary" @onclick="VerificarFactorial">Verificar</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else
+    {
+        <p>El número es el factorial de algún dígito: @(resultado == 1 ? 1 : 0)</p>
+    }
+    <p>La función factorial se representa con un signo de exclamación “!” detrás de un número. Esta exclamación quiere decir que hay que multiplicar todos los números enteros positivos que hay entre ese número y el 1</p>
+    <p><a href="https://www.smartick.es/blog/matematicas/numeros-enteros/factoriales/">Más sobre los Factoriales</a></p>
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numeroInput = "";  // Se recibe el valor como string para validar vacío o formato incorrecto
+    private int resultado = 0;
+    private string mensajeError = "";
+
+    private void VerificarFactorial()
+    {
+        mensajeError = "";
+
+        // Verificar si el input está vacío
+        if (string.IsNullOrWhiteSpace(numeroInput))
+        {
+            mensajeError = "No se ha introducido ningún número.";
+            return;
+        }
+
+        // Intentar convertir el input a número entero
+        if (int.TryParse(numeroInput, out int numero))
+        {
+            // Verificar si el número es el factorial de algún dígito (0-9)
+            resultado = EsFactorialDeUnDigito(numero);
+        }
+        else
+        {
+            mensajeError = "Por favor, introduce un número entero válido.";
+        }
+    }
+
+    private void Limpiar()
+    {
+        numeroInput = "";
+        resultado = 0;
+        mensajeError = "";
+    }
+
+    private int Factorial(int num)
+    {
+        if (num == 0 || num == 1) return 1;
+        int factorial = 1;
+        for (int i = 2; i <= num; i++)
+        {
+            factorial *= i;
+        }
+        return factorial;
+    }
+
+    private int EsFactorialDeUnDigito(int num)
+    {
+        // Verifica si el número es el factorial de un dígito (0-9)
+        for (int i = 0; i <= 9; i++)
+        {
+            if (num == Factorial(i))
+            {
+                return 1;
+            }
+        }
+        return 0;
+    }
+}

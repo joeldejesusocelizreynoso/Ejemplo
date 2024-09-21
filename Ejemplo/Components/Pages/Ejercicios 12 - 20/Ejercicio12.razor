@@ -1,0 +1,102 @@
+﻿@page "/Ejercicio12"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 12: Verificar si un dígito está presente en un número entero</h3>
+
+<div>
+    <label>Introduce un número entero:</label>
+    <input @bind-value="numeroInput" @bind-value:event="oninput" type="text" />
+
+    <label>Introduce un dígito a buscar (0-9):</label>
+    <input @bind-value="digitoInput" @bind-value:event="oninput" type="text" min="0" max="9" />
+
+    <button class="btn btn-outline-primary" @onclick="Calcular">Verificar</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else if (resultado != null)
+    {
+        <p>El resultado es: @resultado</p>
+    }
+</div>
+
+<p>El dígito a buscar debe ser necesariomente desde 0 a 9 porque en efecto eso es un dígijo, es un "Guarismo", es decir, los dígitos que van desde 0 al 9.</p>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numeroInput = ""; // Se recibe el valor como string para validar vacío
+    private string digitoInput = ""; // Se recibe el dígito como string
+    private string? resultado;
+    private string mensajeError = "";
+
+    private void Calcular()
+    {
+        mensajeError = "";
+        resultado = null;
+
+        // Verificar si el input del número está vacío
+        if (string.IsNullOrWhiteSpace(numeroInput))
+        {
+            mensajeError = "No se ha introducido ningún número.";
+            return;
+        }
+
+        // Verificar si el dígito está vacío
+        if (string.IsNullOrWhiteSpace(digitoInput))
+        {
+            mensajeError = "No se ha introducido ningún dígito a buscar.";
+            return;
+        }
+
+        // Intentamos convertir el input a número entero
+        if (int.TryParse(numeroInput, out int numero) && int.TryParse(digitoInput, out int digito))
+        {
+            // Validamos que el dígito esté en el rango de 0 a 9
+            if (digito < 0 || digito > 9)
+            {
+                mensajeError = "El dígito debe estar entre 0 y 9.";
+                return;
+            }
+
+            // Verificar si el dígito está en el número
+            int existe = VerificarDigito(numero, digito);
+            resultado = existe.ToString(); // Convertir el resultado a string para mostrarlo
+        }
+        else
+        {
+            mensajeError = "Los valores introducidos no son números enteros válidos.";
+        }
+    }
+
+    private void Limpiar()
+    {
+        numeroInput = "";
+        digitoInput = "";
+        resultado = null;
+        mensajeError = "";
+    }
+
+    private int VerificarDigito(int numero, int digito)
+    {
+        // Convertir el número a positivo si es negativo
+        numero = Math.Abs(numero);
+
+        // Revisar cada dígito del número
+        while (numero > 0)
+        {
+            if (numero % 10 == digito)
+            {
+                return 1; // El dígito está presente
+            }
+            numero /= 10;
+        }
+
+        return 0; // El dígito no está presente
+    }
+}

@@ -1,0 +1,94 @@
+﻿@page "/Ejercicio36"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 36: Obtener el elemento de la serie de Fibonacci</h3>
+
+<div>
+    <label>Introduce un número entero:</label>
+    <input @bind-value="numeroInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 5" />
+    <button class="btn btn-outline-primary" @onclick="CalcularFibonacci">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    <p style="color:@(esError ? "red" : "black")">@mensaje</p>
+    @if (!esError)
+    {
+        <p>El elemento de la serie de Fibonacci en la posición @numero es: @resultadoFibonacci</p>
+    }
+    <p>Es una secuencia infinita de números naturales cuyos dos primeros términos son 1 y 1, y cualquier otro término se obtiene sumando los dos inmediatamente anteriores.</p>
+    <p><a href="https://www2.ual.es/jardinmatema/sucesion-de-fibonacci/">Más sobre La Sucesión de Fibonacci</a></p>
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numeroInput = "";
+    private int numero;
+    private int resultadoFibonacci;
+    private string mensaje = "";
+    private bool esError = false;
+
+    private void CalcularFibonacci()
+    {
+        esError = false;
+        mensaje = "";
+
+        // Validar si el input está vacío
+        if (string.IsNullOrWhiteSpace(numeroInput))
+        {
+            mensaje = "Por favor, introduce un número entero.";
+            esError = true;
+            return;
+        }
+
+        // Validar si el input es un número válido
+        if (!int.TryParse(numeroInput, out numero))
+        {
+            mensaje = "Asegúrate de que el valor introducido sea un número entero válido.";
+            esError = true;
+            return;
+        }
+
+        // Validar que el número sea no negativo
+        if (numero < 0)
+        {
+            mensaje = "El número debe ser mayor o igual a cero.";
+            esError = true;
+            return;
+        }
+
+        // Calcular el número de Fibonacci
+        resultadoFibonacci = ObtenerFibonacci(numero);
+        mensaje = "";
+    }
+
+    // Función para obtener el número de Fibonacci en una posición dada
+    private int ObtenerFibonacci(int n)
+    {
+        if (n == 0) return 0;
+        if (n == 1) return 1;
+
+        int a = 0;
+        int b = 1;
+        int temp;
+
+        for (int i = 2; i <= n; i++)
+        {
+            temp = a + b;
+            a = b;
+            b = temp;
+        }
+
+        return b;
+    }
+
+    private void Limpiar()
+    {
+        numeroInput = "";
+        numero = 0;
+        resultadoFibonacci = 0;
+        mensaje = "";
+        esError = false;
+    }
+}

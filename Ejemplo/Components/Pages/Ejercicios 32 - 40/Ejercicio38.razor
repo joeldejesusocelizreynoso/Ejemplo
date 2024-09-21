@@ -1,0 +1,91 @@
+﻿@page "/Ejercicio38"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 38: Cantidad de números terminados en 3</h3>
+
+<div>
+    <label>Introduce 10 números separados por espacios:</label>
+    <input @bind-value="numerosInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 13 43 22 37 ..." />
+    <button class="btn btn-outline-primary" @onclick="CalcularNumerosTerminadosEn3">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    <p style="color:@(esError ? "red" : "black")">@mensaje</p>
+    @if (!esError)
+    {
+        <p>Cantidad de números terminados en 3: @cantidadTerminadosEn3</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numerosInput = "";
+    private int cantidadTerminadosEn3 = 0;
+    private string mensaje = "";
+    private bool esError = false;
+
+    private void CalcularNumerosTerminadosEn3()
+    {
+        esError = false;
+        mensaje = "";
+
+        // Validar si el input está vacío
+        if (string.IsNullOrWhiteSpace(numerosInput))
+        {
+            mensaje = "Por favor, introduce 10 números.";
+            esError = true;
+            return;
+        }
+
+        // Dividir el input y verificar que contenga exactamente 10 números
+        string[] numerosString = numerosInput.Split(' ');
+
+        if (numerosString.Length != 10)
+        {
+            mensaje = "Debes introducir exactamente 10 números separados por espacios.";
+            esError = true;
+            return;
+        }
+
+        // Validar que cada entrada sea un número entero
+        int[] vectorNumeros = new int[numerosString.Length];
+        for (int i = 0; i < numerosString.Length; i++)
+        {
+            if (!int.TryParse(numerosString[i].Trim(), out vectorNumeros[i]))
+            {
+                mensaje = $"El valor '{numerosString[i]}' no es un número entero válido.";
+                esError = true;
+                return;
+            }
+        }
+
+        // Contar cuántos números terminan en 3
+        cantidadTerminadosEn3 = ContarNumerosTerminadosEn3(vectorNumeros);
+    }
+
+    // Función para contar cuántos números terminan en 3
+    private int ContarNumerosTerminadosEn3(int[] vector)
+    {
+        int contador = 0;
+
+        foreach (var numero in vector)
+        {
+            if (Math.Abs(numero) % 10 == 3) // Verifica si el último dígito es 3 (teniendo en cuenta números negativos).
+            {
+                contador++;
+            }
+        }
+
+        return contador;
+    }
+
+    private void Limpiar()
+    {
+        numerosInput = "";
+        cantidadTerminadosEn3 = 0;
+        mensaje = "";
+        esError = false;
+    }
+}

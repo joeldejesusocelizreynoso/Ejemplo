@@ -1,0 +1,81 @@
+﻿@page "/Ejercicio32"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 32: Promedio real de un vector de 10 posiciones</h3>
+
+<div>
+    <label>Introduce 10 números separados por espacios:</label>
+    <input @bind-value="numerosInput" @bind-value:event="oninput" type="text" placeholder="Ejemplo: 1 2 3 4 5 6 7 8 9 10" />
+    <button class="btn btn-outline-primary" @onclick="CalcularPromedioReal">Calcular</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else
+    {
+        <p>El promedio real es: @promedioReal</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string numerosInput = "";
+    private double promedioReal;
+    private string mensajeError = "";
+
+    private void CalcularPromedioReal()
+    {
+        mensajeError = "";
+
+        // Validar si el input está vacío
+        if (string.IsNullOrWhiteSpace(numerosInput))
+        {
+            mensajeError = "Por favor, introduce los números.";
+            return;
+        }
+
+        // Dividimos el input y verificamos si contiene exactamente 10 números
+        string[] numerosString = numerosInput.Split(' ');
+
+        if (numerosString.Length != 10)
+        {
+            mensajeError = "Debes introducir exactamente 10 números separados por espacios ( ), y en dado caso no debe tener letras, solo número.";
+            return;
+        }
+
+        try
+        {
+            // Convertir los valores a enteros y calcular el promedio
+            int[] vectorNumeros = numerosString.Select(n => int.Parse(n.Trim())).ToArray();
+            promedioReal = ObtenerPromedioReal(vectorNumeros);
+        }
+        catch (FormatException)
+        {
+            mensajeError = "Asegúrate de que todos los valores sean números enteros válidos.";
+        }
+    }
+
+    // Función para obtener el promedio real del vector
+    private double ObtenerPromedioReal(int[] vector)
+    {
+        int suma = 0;
+        for (int i = 0; i < vector.Length; i++)
+        {
+            suma += vector[i];
+        }
+
+        return (double)suma / vector.Length;
+    }
+
+    private void Limpiar()
+    {
+        numerosInput = "";
+        promedioReal = 0;
+        mensajeError = "";
+    }
+}

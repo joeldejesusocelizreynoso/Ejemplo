@@ -1,0 +1,99 @@
+﻿@page "/Ejercicio30"
+@rendermode InteractiveServer
+
+<h3>Ejercicio 30: Encontrar la posición del mayor número primo en el vector</h3>
+
+<div>
+    <label>Introduce los 10 números del vector separados por comas:</label>
+    <input @bind-value="inputVector" @bind-value:event="oninput" type="text" placeholder="Ej: 3, 5, 1, 9, 2, 8, 7, 6, 4, 11" />
+    <button class="btn btn-outline-primary" @onclick="EncontrarMayorPrimo">Buscar Mayor Primo</button>
+    <button class="btn btn-outline-danger" @onclick="Limpiar">Limpiar</button>
+</div>
+
+<div>
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <p style="color:red;">@mensajeError</p>
+    }
+    else
+    {
+        <p>@(posicionMayorPrimo == -1 ? "No hay números primos en el vector" : $"El mayor número primo está en la posición: {posicionMayorPrimo + 1}")</p>
+    }
+</div>
+
+<a href="Menú-Ejercicios" class="btn btn-outline-success">Volver al Menú Principal</a>
+
+@code {
+    private string inputVector = "";
+    private int posicionMayorPrimo = -1;
+    private string mensajeError = "";
+
+    private void EncontrarMayorPrimo()
+    {
+        mensajeError = "";
+
+        // Validar si el input está vacío
+        if (string.IsNullOrWhiteSpace(inputVector))
+        {
+            mensajeError = "Por favor, introduce los números del vector.";
+            return;
+        }
+
+        // Dividimos el input en un array y verificamos si contiene exactamente 10 elementos
+        string[] numeros = inputVector.Split(',');
+
+        if (numeros.Length != 10)
+        {
+            mensajeError = "El vector debe contener exactamente 10 números separados por comas (,), y en dado caso no debe tener letras, solo números.";
+            return;
+        }
+
+        // Intentar convertir los valores a enteros y validar
+        try
+        {
+            int[] vector = numeros.Select(n => int.Parse(n.Trim())).ToArray();
+
+            int mayorPrimo = int.MinValue;
+
+            // Buscamos el mayor número primo y su posición
+            for (int i = 0; i < vector.Length; i++)
+            {
+                if (EsPrimo(vector[i]) && vector[i] > mayorPrimo)
+                {
+                    mayorPrimo = vector[i];
+                    posicionMayorPrimo = i;
+                }
+            }
+
+            // Si no se encuentra ningún número primo
+            if (mayorPrimo == int.MinValue)
+            {
+                posicionMayorPrimo = -1;
+            }
+        }
+        catch (FormatException)
+        {
+            mensajeError = "Por favor, asegúrate de que todos los valores sean números enteros válidos.";
+        }
+    }
+
+    private bool EsPrimo(int numero)
+    {
+        if (numero < 2) return false;
+        for (int i = 2; i <= Math.Sqrt(numero); i++)
+        {
+            if (numero % i == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void Limpiar()
+    {
+        inputVector = "";
+        posicionMayorPrimo = -1;
+        mensajeError = "";
+    }
+}
